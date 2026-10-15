@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: scans
+    description: Website accessibility scans
 paths:
   /healthz:
     get:
@@ -24,6 +26,106 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [scans]
+      summary: Read dashboard totals derived from saved scans
+      responses:
+        "200":
+          description: Dashboard totals and recent scans
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+  /scans:
+    get:
+      operationId: listScans
+      tags: [scans]
+      summary: List recent scan history
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        "200":
+          description: Scan history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScanSummary"
+    post:
+      operationId: createScan
+      tags: [scans]
+      summary: Run a real automated accessibility scan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScanInput"
+      responses:
+        "200":
+          description: Completed scan result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scan"
+        "400":
+          description: Invalid or non-public URL
+        "422":
+          description: Website could not be scanned
+        "429":
+          description: Scan capacity reached
+        "504":
+          description: Scan timed out
+  /scans/{scanId}:
+    get:
+      operationId: getScan
+      tags: [scans]
+      summary: Read a saved scan and its findings
+      parameters:
+        - name: scanId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scan details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scan"
+        "404":
+          description: Scan not found
+  /scans/{scanId}/export.csv:
+    get:
+      operationId: exportScanCsv
+      tags: [scans]
+      summary: Export scan findings as CSV
+      parameters:
+        - name: scanId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CSV report
+          content:
+            text/csv:
+              schema:
+                type: string
+        "404":
+          description: Scan not found
 components:
   schemas:
     HealthStatus:
@@ -31,6 +133,84 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
+    ScanInput:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+      required: [url]
+    ScanSummary:
+      type: object
+      properties:
+        id: { type: string }
+        url: { type: string }
+        domain: { type: string }
+        title: { type: string }
+        status: { type: string, enum: [completed, failed] }
+        createdAt: { type: string, format: date-time }
+        durationMs: { type: integer }
+        violationCount: { type: integer }
+        criticalCount: { type: integer }
+        seriousCount: { type: integer }
+        moderateCount: { type: integer }
+        minorCount: { type: integer }
+      required: [id, url, domain, title, status, createdAt, durationMs, violationCount, criticalCount, seriousCount, moderateCount, minorCount]
+    Finding:
+      type: object
+      properties:
+        id: { type: string }
+        impact: { type: string, enum: [critical, serious, moderate, minor] }
+        description: { type: string }
+        help: { type: string }
+        helpUrl: { type: string }
+        ruleId: { type: string }
+        wcag: { type: array, items: { type: string } }
+        nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/FindingNode"
+      required: [id, impact, description, help, helpUrl, ruleId, wcag, nodes]
+    FindingNode:
+      type: object
+      properties:
+        target: { type: array, items: { type: string } }
+        html: { type: string }
+        failureSummary: { type: string }
+      required: [target, html, failureSummary]
+    Scan:
+      allOf:
+        - $ref: "#/components/schemas/ScanSummary"
+        - type: object
+          properties:
+            pageTitle: { type: string }
+            findings:
+              type: array
+              items:
+                $ref: "#/components/schemas/Finding"
+            passCount: { type: integer }
+            incompleteCount: { type: integer }
+            pageUrl: { type: string }
+            error: { type: ["string", "null"] }
+          required: [pageTitle, findings, passCount, incompleteCount, pageUrl, error]
+    Dashboard:
+      type: object
+      properties:
+        totalScans: { type: integer }
+        totalViolations: { type: integer }
+        severityCounts:
+          type: object
+          properties:
+            critical: { type: integer }
+            serious: { type: integer }
+            moderate: { type: integer }
+            minor: { type: integer }
+          required: [critical, serious, moderate, minor]
+        recentScans:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScanSummary"
+      required: [totalScans, totalViolations, severityCounts, recentScans]
 

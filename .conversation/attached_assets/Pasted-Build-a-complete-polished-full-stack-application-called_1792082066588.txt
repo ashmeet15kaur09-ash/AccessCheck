@@ -1,0 +1,43 @@
+Build a complete, polished, full-stack application called **AccessCheck — Website Accessibility Auditor**.
+
+I want you to generate the entire project, implement the features, run it, test it, and fix errors. Do not create only a frontend mockup or use fake scan results.
+
+**Technology**
+- Frontend: React, TypeScript, Tailwind CSS.
+- Backend: Python, FastAPI.
+- Browser automation: Playwright.
+- Accessibility engine: axe-core.
+- Database: SQLite for scan history.
+- Charts: a React-compatible chart library.
+
+**Core features**
+1. A professional, responsive landing page with a URL input and Scan Website button.
+2. A backend that safely validates public website URLs and runs real accessibility scans.
+3. Use Playwright to load webpages and axe-core to identify accessibility issues.
+4. A dashboard showing actual scan status, severity counts, findings, and rule descriptions.
+5. An issue explorer with search and severity filters.
+6. Issue details showing the affected element, evidence, relevant WCAG reference, and practical remediation guidance.
+7. Scan history and comparisons between scans.
+8. CSV export and a printable report.
+9. Loading states, timeouts, clear error messages, and empty states.
+10. Automated tests and a README with setup, architecture, testing, and deployment instructions.
+
+**Security requirements**
+- Prevent server-side request forgery. Reject localhost, private, link-local, reserved, and non-public IP addresses.
+- Validate DNS resolutions, prevent DNS-rebinding attacks where practical, revalidate redirects, and restrict browser network access to public destinations.
+- Limit scan duration, concurrent scans, response size, and resource usage.
+- Never expose server secrets or allow arbitrary local-file access.
+- Validate inputs on the backend and handle failures safely.
+
+**Quality requirements**
+- All dashboard metrics must come from real scan data.
+- Do not invent accessibility scores or claim WCAG compliance based only on automated scans.
+- Label automated findings accurately and explain that manual accessibility testing is still necessary.
+- Include sample data only in a clearly labelled demo mode.
+- Add tests for invalid URLs, redirects, timeouts, empty results, permission checks, and database errors.
+- Use a clean, modern visual design, accessible colors, keyboard-friendly controls, and responsive layouts.
+
+**Workflow**
+First create a working vertical slice: enter a public URL, run a real scan, and display the findings. Run it and fix errors before adding history, charts, and exports. Then run the test suite, resolve failures, and provide clear instructions for GitHub and deployment.
+
+Use free and open-source tools wherever possible. Do not require paid AI APIs. If a feature cannot be completed or tested in the environment, clearly state the limitation rather than pretending it works.

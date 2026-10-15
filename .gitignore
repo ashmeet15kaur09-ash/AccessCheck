@@ -47,3 +47,11 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+.pythonlibs/
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+/artifacts/api-server/data/*.sqlite3
+/artifacts/api-server/data/*.sqlite3-shm
+/artifacts/api-server/data/*.sqlite3-wal

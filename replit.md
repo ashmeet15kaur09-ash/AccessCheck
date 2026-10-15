@@ -1,44 +1,55 @@
-# [Project name]
+# AccessCheck
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+AccessCheck audits public websites with Playwright and axe-core, and stores scan findings in SQLite.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the FastAPI scan API on its managed `/api` service
+- `pnpm --filter @workspace/accesscheck run dev` — run the AccessCheck React/Vite frontend
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `cd artifacts/api-server && python -m pytest` — run API and URL-security tests
+- `uv sync && uv run playwright install chromium` — install Python dependencies and the scan browser
+- Optional env: `ACCESSCHECK_DB_PATH` — override the default SQLite history file
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
+- Frontend: React, TypeScript, Tailwind CSS, Wouter, React Query
+- API: Python FastAPI
+- Scanning: Playwright Python, Chromium, axe-core
+- DB: SQLite
 - API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend build: Vite
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/accesscheck/` — frontend
+- `artifacts/api-server/accesscheck/` — FastAPI API, scanner, SSRF guards, and SQLite persistence
+- `artifacts/api-server/tests/` — backend and security tests
+- `lib/api-spec/openapi.yaml` — API contract source
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Scan history uses SQLite because the product brief explicitly requested it.
+- Scan URLs are restricted to public HTTP(S) destinations; browser requests re-check DNS and redirects before requesting them.
+- Scan findings are automated axe-core results, not a WCAG compliance score or certification.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Users can run automated audits, inspect axe findings and evidence, filter and compare saved scans, export CSV, and print a report.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Keep real scan data separate from demo data; do not invent accessibility scores or claim automated checks establish compliance.
+- Use free and open-source tools; do not require paid AI services.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Chromium must be installed with Playwright before the first real scan.
+- SQLite data is local to the service filesystem; configure durable storage before moving to a host with ephemeral filesystems.
+- Browser request interception and DNS rechecks reduce SSRF risk but are not a replacement for an OS/network-isolated browser in high-risk multi-tenant deployments.
 
 ## Pointers
 

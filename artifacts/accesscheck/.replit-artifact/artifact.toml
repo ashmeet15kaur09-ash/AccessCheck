@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AccessCheck"
+description = "A website accessibility auditor that runs real Playwright and axe-core scans, explains actionable findings, and tracks scan history."
+version = "1.0.0"
+id = "artifacts/accesscheck"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22382
+
+[services.development]
+run = "pnpm --filter @workspace/accesscheck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/accesscheck", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/accesscheck/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22382"
+BASE_PATH = "/"

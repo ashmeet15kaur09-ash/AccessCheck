@@ -1,0 +1,1 @@
+- [Playwright scanner network boundaries](playwright-ssrf-boundaries.md) — Nix browser libraries and redirect behavior affect reliable, SSRF-safe Playwright scans.
