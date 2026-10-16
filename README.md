@@ -15,7 +15,7 @@ Automated results are not a compliance certification. Keyboard, screen-reader, c
 
 ## Screenshot
 
-![AccessCheck accessibility audit report](screenshots/accesscheck-report.png)
+![AccessCheck accessibility audit report](screenshots/Screenshot1.png)
 
 *Example audit report. Automated findings are a starting point, not a compliance certification.*
 
