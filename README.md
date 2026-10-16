@@ -13,12 +13,12 @@ Automated results are not a compliance certification. Keyboard, screen-reader, c
 - **Security-focused scanning** with URL validation, network request restrictions, and resource limits.
 - **No paid API keys required.**
 
+
 ## Screenshot
 
 ![AccessCheck accessibility audit report](screenshots/Screenshot1.png)
 
 *Example audit report. Automated findings are a starting point, not a compliance certification.*
-
 
 ## Run on Replit
 
