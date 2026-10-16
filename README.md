@@ -3,6 +3,22 @@
 AccessCheck runs real, automated accessibility checks against public websites using Chromium, Playwright, and the local axe-core engine. It saves scan history to SQLite and presents rule-level findings with affected markup, evidence, WCAG references, and axe remediation guidance.
 
 Automated results are not a compliance certification. Keyboard, screen-reader, cognitive, and other manual checks are still necessary.
+## Key Features
+
+- **Automated accessibility audits** using Playwright, Chromium, and axe-core.
+- **WCAG-linked findings** with severity levels, affected markup, evidence, and remediation guidance.
+- **Scan history** persisted locally with SQLite.
+- **Interactive dashboard** to explore findings and filter issues by severity.
+- **CSV export** for downloading audit results.
+- **Security-focused scanning** with URL validation, network request restrictions, and resource limits.
+- **No paid API keys required.**
+
+## Screenshot
+
+![AccessCheck accessibility audit report](screenshots/accesscheck-report.png)
+
+*Example audit report. Automated findings are a starting point, not a compliance certification.*
+
 
 ## Run on Replit
 
